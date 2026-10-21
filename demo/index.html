@@ -1,0 +1,122 @@
+<!doctype html>
+<html lang="id">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta
+      name="description"
+      content="Nalar — workplace brain dengan kontrol akses deny-by-default untuk WorkBuddy."
+    />
+    <title>Nalar — Workplace Brain</title>
+    <link rel="stylesheet" href="/styles.css" />
+    <script src="/app.js" defer></script>
+  </head>
+  <body>
+    <div class="shell">
+      <aside class="sidebar">
+        <div class="brand">
+          <div class="brand-mark" aria-hidden="true">N</div>
+          <div class="brand-text">
+            <strong>Nalar</strong>
+            <span>Workplace Brain</span>
+          </div>
+        </div>
+
+        <div class="sidebar-section">
+          <div class="section-label">Masuk sebagai</div>
+          <div id="user-list" class="user-list" role="listbox" aria-label="Pilih identitas demo"></div>
+        </div>
+
+        <div id="identity-card" class="identity-card"></div>
+
+        <div class="sidebar-footer">
+          <div class="status-line"><span class="status-dot"></span> API lokal aktif</div>
+          <small>Data sintetis · demo WorkBuddy</small>
+        </div>
+      </aside>
+
+      <main class="main">
+        <header class="topbar">
+          <div class="topbar-copy">
+            <h1>Otak perusahaan, dengan batas akses.</h1>
+            <p>
+              Tanya lintas chat, drive, task board, dan HRIS. Setiap jawaban
+              bersitasi dan hanya memakai sumber yang boleh Anda lihat.
+            </p>
+          </div>
+          <div class="topbar-meta">
+            <span id="org-pill" class="pill">Memuat organisasi…</span>
+            <span id="doc-pill" class="pill ghost">— sumber</span>
+          </div>
+        </header>
+
+        <nav class="tabs" aria-label="Tampilan">
+          <button type="button" data-view="chat" class="tab active">Tanya</button>
+          <button type="button" data-view="tests" id="tests-tab" class="tab" hidden>Uji Kebocoran</button>
+          <button type="button" data-view="audit" id="audit-tab" class="tab" hidden>Audit</button>
+        </nav>
+
+        <section id="view-chat" class="view active">
+          <div class="chat">
+            <div id="messages" class="messages" aria-live="polite"></div>
+            <div class="composer-wrap">
+              <div id="suggestions" class="suggestions" aria-label="Contoh pertanyaan"></div>
+              <form id="ask-form" class="composer">
+                <label class="sr-only" for="query">Pertanyaan</label>
+                <input
+                  id="query"
+                  name="query"
+                  type="text"
+                  autocomplete="off"
+                  maxlength="500"
+                  placeholder="Tanya tentang cuti, kontrak, insiden, atau kebijakan…"
+                />
+                <button type="submit" id="send">Tanya</button>
+              </form>
+              <p class="hint">
+                Identitas aktif: <strong id="active-user-hint">—</strong>. Peran
+                tidak bisa diubah lewat teks pertanyaan.
+              </p>
+            </div>
+          </div>
+        </section>
+
+        <section id="view-tests" class="view">
+          <div class="panel">
+            <div class="panel-head">
+              <div>
+                <h2>Matriks uji kebocoran</h2>
+                <p>
+                  16 skenario dijalankan live terhadap engine yang sama dengan
+                  chat. Hanya identitas dengan grup audit yang bisa menjalankan
+                  uji ini.
+                </p>
+              </div>
+              <button type="button" id="run-tests" class="button">Jalankan uji</button>
+            </div>
+            <div id="test-summary" class="summary" hidden></div>
+            <div id="test-results" class="table-wrap"></div>
+          </div>
+        </section>
+
+        <section id="view-audit" class="view">
+          <div class="panel">
+            <div class="panel-head">
+              <div>
+                <h2>Audit akses</h2>
+                <p>
+                  Hanya metadata: identitas, keputusan, dan dokumen yang dikutip.
+                  Konten terlarang tidak pernah masuk log.
+                </p>
+              </div>
+              <button type="button" id="refresh-audit" class="button ghost">
+                Muat ulang
+              </button>
+            </div>
+            <div id="audit-results" class="table-wrap"></div>
+          </div>
+        </section>
+      </main>
+    </div>
+  </body>
+</html>

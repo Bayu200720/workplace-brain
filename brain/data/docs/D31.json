@@ -1,0 +1,33 @@
+{
+  "id": "D31",
+  "title": "Kebijakan Cuti dan Kerja Jarak Jauh 2026",
+  "source": "drive",
+  "source_ref": "PDF/D31.pdf",
+  "owner": "People Ops",
+  "classification": "internal",
+  "updated_at": "2026-10-21",
+  "tags": [
+    "cuti",
+    "absensi",
+    "remote",
+    "reimbursement",
+    "kebijakan"
+  ],
+  "acl": {
+    "visibility": "department",
+    "departments": [
+      "people",
+      "engineering"
+    ],
+    "groups": [],
+    "users": [],
+    "projects": [
+      "people-ops"
+    ],
+    "deny_users": [],
+    "deny_groups": []
+  },
+  "fields": [],
+  "pages": 2,
+  "body": "## Halaman 1\n\nKebijakan Cuti dan Kerja Jarak Jauh 2026 PT Sinar Nusantara · People Ops · Revisi 3 · Berlaku sejak 1 Januari 2026 1. Cuti Tahunan Setiap karyawan tetap menerima 12 hari cuti berbayar per tahun. Cuti dapat diambil setelah masa kerja tiga bulan dan diajukan paling lambat tiga hari kerja sebelumnya melalui HRIS. Sisa cuti tahunan maksimal dapat dibawa ke periode berikutnya sebanyak 5 hari kerja. Cuti yang jatuh pada hari libur nasional tidak dihitung sebagai cuti tahunan dan dapat diinvalidasi dengan persetujuan atasan. 2. Cuti Sakit Karyawan dapat mengambil cuti sakit dengan surat keterangan dokter untuk lebih dari dua hari berturut-turut. Tiga hari pertama tidak memerlukan surat keterangan. Cuti sakit mengurangi cuti tahunan, kecuali yang ditanggung BPJS, maksimal 3 hari per tahun. 3. Kerja Jarak Jauh Karyawan dapat bekerja remote maksimal dua hari per minggu dengan persetujuan atasan langsung. Hari remote wajib dicatat di kalender tim. Core hours tetap berlaku pukul 10.00 sampai 15.00 WIB. Kehadiran pada rapat tim inti wajib secara virtual dengan kamera menyala.\n\n## Halaman 2\n\n4. Klaim dan Reimbursement Perjalanan dinas wajib mendapat persetujuan atasan sebelum pemesanan. Tiket ekonomi dan hotel maksimal Rp1.200.000 per malam untuk kota tier 1. Klaim reimbursement diajukan paling lambat 14 hari setelah perjalanan melalui sistem Finance, lengkap dengan invoice dan bukti pembayaran. Konsumsi harian maksimal Rp250.000 dan tidak berlaku untuk jamuan klien. 5. Pelaporan Absensi Absensi dicatat otomatis melalui sistem fingerprint. Koreksi absensi maksimal tiga hari kerja setelah tanggal akrual dan wajib disetujui atasan langsung. Karyawan yang tidak hadir tanpa keterangan lebih dari tiga hari berturut-turut akan dianggap cuti tanpa izin dengan potongan gaji. 6. PIC dan Kanal Kontak Untuk pertanyaan mengenai cuti dan kebijakan kehadiran, hubungi HR Operations melalui kanal resmi HRIS. Jangan membagikan data pribadi karyawan ke grup chat."
+}

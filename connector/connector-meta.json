@@ -1,0 +1,22 @@
+{
+  "name": "Nalar Workplace Brain",
+  "name_en": "Nalar Workplace Brain",
+  "description": "Jawab pertanyaan karyawan dari chat, drive, task board, dan HRIS dengan kontrol akses per identitas dan sitasi wajib.",
+  "description_zh": "基于权限的企业知识助手，跨聊天、云盘、任务板与 HRIS 回答员工问题，并强制引用来源。",
+  "description_en": "Access-controlled workplace answers across chat, drive, task boards, and HRIS with mandatory citations.",
+  "source": "nalar-workplace-brain",
+  "type": "mcp",
+  "version": "1.0.0",
+  "auth_mode": "token",
+  "minWorkbuddyVersion": "4.23.0",
+  "examples_zh": [
+    "我一年有多少天带薪年假？",
+    "Acme 合同的金额是多少？",
+    "昨天 Atlas 的结账故障原因是什么？"
+  ],
+  "examples_en": [
+    "How many paid annual leave days do I get?",
+    "What is the Acme contract value?",
+    "What caused yesterday's Atlas checkout failure?"
+  ]
+}

@@ -1,0 +1,26 @@
+{
+  "title": "Nalar Workplace Brain — Konfigurasi Koneksi",
+  "title_en": "Nalar Workplace Brain — Connection Settings",
+  "description": "Masukkan access token Nalar dan alamat service. Kredensial hanya disimpan di komputer ini dan dikirim saat WorkBuddy terhubung.",
+  "description_en": "Provide the Nalar access token and the service address. Credentials stay on this machine and are only sent when WorkBuddy connects.",
+  "fields": [
+    {
+      "key": "NALAR_TOKEN",
+      "label": "Access Token Nalar",
+      "label_en": "Nalar Access Token",
+      "type": "password",
+      "required": true,
+      "placeholder": "Token dari server Nalar (dipetakan ke satu identitas)",
+      "description": "Token menentukan identitas pengguna di server Nalar. Token tidak pernah dipanggil dari chat."
+    },
+    {
+      "key": "NALAR_BASE_URL",
+      "label": "Alamat Service Nalar",
+      "label_en": "Nalar Service URL",
+      "type": "text",
+      "required": true,
+      "defaultValue": "http://127.0.0.1:4173",
+      "description": "URL API Nalar. Untuk instalasi privat, ganti dengan alamat internal perusahaan."
+    }
+  ]
+}

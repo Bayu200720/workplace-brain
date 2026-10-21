@@ -1,0 +1,15 @@
+{
+  "mcpServers": {
+    "nalar": {
+      "type": "stdio",
+      "command": "node",
+      "args": ["server.mjs"],
+      "cwd": ".",
+      "env": {
+        "NALAR_BASE_URL": "${NALAR_BASE_URL}",
+        "NALAR_TOKEN": "${NALAR_TOKEN}"
+      },
+      "timeout": 30000
+    }
+  }
+}

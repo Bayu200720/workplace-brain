@@ -1,0 +1,22 @@
+{
+  "name": "nalar-workplace-brain",
+  "version": "1.0.0",
+  "private": true,
+  "type": "module",
+  "description": "Nalar — access-controlled workplace brain for WorkBuddy. Answers staff questions across chat, drive, and task boards without leaking restricted knowledge.",
+  "scripts": {
+    "start": "node brain/src/server.js",
+    "ask": "node brain/src/cli.js",
+    "test": "node --test brain/test/*.test.js",
+    "verify:mcp": "node scripts/verify-mcp.mjs",
+    "export:workflow": "node scripts/export-workflow.mjs",
+    "ingest:pdf": "node scripts/ingest-pdf.mjs",
+    "start:token": "node brain/src/server.js"
+  },
+  "engines": {
+    "node": ">=20"
+  },
+  "devDependencies": {
+    "pdf-parse": "^2.4.5"
+  }
+}

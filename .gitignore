@@ -1,0 +1,6 @@
+node_modules/
+brain/audit/
+demo-*.png
+*.log
+.env
+.DS_Store
