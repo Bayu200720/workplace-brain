@@ -365,3 +365,8 @@ workby/
 
 Lihat [`docs/PROPOSAL.md`](docs/PROPOSAL.md) untuk problem statement, alur demo
 3 menit, pembagian peran, roadmap produksi, dan pemetaan ke kriteria penilaian.
+
+## Lisensi
+
+MIT — lihat [`LICENSE`](LICENSE). Seluruh data dalam repo ini sintetis; tidak ada
+data karyawan, klien, atau perusahaan nyata.
