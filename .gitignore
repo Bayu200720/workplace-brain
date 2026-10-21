@@ -4,3 +4,4 @@ demo-*.png
 *.log
 .env
 .DS_Store
+.tools/
