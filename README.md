@@ -366,6 +366,15 @@ workby/
 Lihat [`docs/PROPOSAL.md`](docs/PROPOSAL.md) untuk problem statement, alur demo
 3 menit, pembagian peran, roadmap produksi, dan pemetaan ke kriteria penilaian.
 
+## Paket submission
+
+[`docs/SUBMISSION.md`](docs/SUBMISSION.md) berisi ringkasan satu halaman untuk
+juri: klaim utama, alur orkestrasi, daftar lampiran (export workflow WorkBuddy,
+evidence run, zip skill & connector, link repo), cara mengambil export workflow
+dari aplikasi, patokan demo 3 menit, dan checklist sebelum submit.
+
+Repo publik: **https://github.com/Bayu200720/workplace-brain**
+
 ## Lisensi
 
 MIT — lihat [`LICENSE`](LICENSE). Seluruh data dalam repo ini sintetis; tidak ada
