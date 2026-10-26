@@ -2,6 +2,7 @@ import { randomUUID } from "node:crypto";
 import { getUser } from "./corpus.js";
 import { canAccess, publicUser } from "./policy.js";
 import { search, pickSentence, tokenize } from "./retrieval.js";
+import { detectConflicts } from "./conflicts.js";
 
 const CREDENTIAL_REQUEST =
   /\b(tampilkan|berikan|kirim|sebutkan|minta|dump|export|ekspor|lihat|buka|show|give|send|list)\b.{0,60}\b(password|passwd|api[\s-]?key|token|secret|kredensial|credential|private key|otp)\b/i;
@@ -111,11 +112,35 @@ function buildGroundedAnswer(results, query) {
 
   let answer = `Berdasarkan ${citations.length} sumber yang boleh Anda akses:\n${lines.join("\n")}`;
 
+  const conflicts = detectConflicts(results);
+  if (conflicts.length > 0) {
+    const conflictLines = conflicts.map((conflict) => {
+      const values = conflict.values
+        .map(
+          (value) =>
+            `- ${value.raw} — ${value.title} (${value.source}, ${value.updated_at})`
+        )
+        .join("\n");
+      const winnerIsNewer =
+        String(conflict.winner.updated_at ?? "") >=
+        String(conflict.loser.updated_at ?? "");
+      const reason =
+        `sumber ${conflict.winner.source} memiliki otoritas lebih tinggi daripada ` +
+        `${conflict.loser.source} (${conflict.winner.updated_at} vs ${conflict.loser.updated_at})` +
+        `${winnerIsNewer ? ", dan juga yang terbaru" : ""}`;
+      return (
+        `Terdapat perbedaan informasi di antara sumber yang boleh Anda akses:\n${values}\n` +
+        `Yang berlaku: ${conflict.chosen} — ${reason}.`
+      );
+    });
+    answer += `\n\n${conflictLines.join("\n\n")}`;
+  }
+
   if (redactedFields > 0) {
     answer += `\n\nCatatan: ${redactedFields} rincian sensitif disembunyikan sesuai kebijakan akses.`;
   }
 
-  return { answer, citations, redactedFields };
+  return { answer, citations, redactedFields, conflicts };
 }
 
 /**
@@ -196,6 +221,7 @@ export function ask({
       message,
       answer: message,
       citations: [],
+      conflicts: [],
       ...base,
       meta: {
         allowed_documents: allowedDocs.length,
@@ -232,7 +258,7 @@ export function ask({
     );
   }
 
-  const { answer, citations, redactedFields } = buildGroundedAnswer(
+  const { answer, citations, redactedFields, conflicts } = buildGroundedAnswer(
     safeResults,
     cleanQuery
   );
@@ -245,6 +271,7 @@ export function ask({
     message: answer,
     answer,
     citations,
+    conflicts,
     ...base,
     access: {
       ...base.access,
@@ -265,7 +292,22 @@ export function ask({
       query: cleanQuery,
       decision: result.decision,
       reason_code: result.reason_code,
+      answer,
+      citations: citations.map((citation) => ({
+        index: citation.index,
+        doc_id: citation.doc_id,
+        title: citation.title,
+        source: citation.source,
+        source_ref: citation.source_ref,
+        updated_at: citation.updated_at,
+        classification: citation.classification
+      })),
       cited_doc_ids: citations.map((citation) => citation.doc_id),
+      conflicts: result.conflicts.map((conflict) => ({
+        winner: conflict.winner.docId,
+        loser: conflict.loser.docId,
+        chosen: conflict.chosen
+      })),
       sources,
       redacted_fields: redactedFields,
       surface

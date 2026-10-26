@@ -47,7 +47,7 @@ Demo dimulai sebagai **Budi** (engineer). Coba:
    diredaksi;
 4. sebagai **Budi**, tanyakan *"Ada rencana PHK?"* → tidak ada konfirmasi
    keberadaan data;
-5. sebagai **Dewi** (CEO), buka tab **Uji Kebocoran** → 16/16 skenario lulus;
+5. sebagai **Dewi** (CEO), buka tab **Uji Kebocoran** → 22/22 skenario lulus;
 6. buka tab **Audit** → hanya metadata akses yang tercatat.
 
 ## Arsitektur
@@ -79,7 +79,7 @@ Tiga lapisan:
 | Invarian | Implementasi | Bukti |
 | --- | --- | --- |
 | Deny-by-default | `brain/src/policy.js` | `policy.test.js` |
-| Filter sebelum retrieval | `search()` hanya menerima dokumen yang lolos | uji matriks 9 user × 31 dokumen |
+| Filter sebelum retrieval | `search()` hanya menerima dokumen yang lolos | uji matriks 9 user × 33 dokumen |
 | Sitasi tidak pernah di luar izin | pengecekan ulang sebelum compose | `citation_subset` |
 | Redaksi field | field tanpa grup/clearance tidak masuk indeks | Tomi vs Rina |
 | Tidak mengonfirmasi data terbatas | pesan `no_evidence` generik | `no_existence_leak` |
@@ -107,17 +107,31 @@ Tiga lapisan:
 npm test
 ```
 
-28 test, mencakup:
+**63 test**, mencakup:
 
 - matriks akses dan deny-by-default;
 - seluruh kombinasi user × dokumen terlarang (tidak ada sitasi/canary bocor);
 - redaksi field dan sitasi;
 - prompt injection, klaim identitas, kredensial, ekspor massal;
-- audit tanpa konten terlarang;
-- API, 403 audit/selftest, static UI, path traversal, method salah.
+- deteksi konflik antar sumber + resolusi berbasis otoritas;
+- pertanyaan bahasa Inggris dan campuran ID/EN di atas dokumen Indonesia;
+- audit: jawaban tersimpan, metadata sitasi lengkap, hash chain terverifikasi;
+- reload korpus: perubahan ACL berlaku pada request berikutnya tanpa restart;
+- API, 403 audit/selftest/verify, static UI, path traversal, method salah.
 
-Di UI, tab **Uji Kebocoran** menjalankan 16 skenario live terhadap engine yang
-sama dengan chat. Terakhir: **16/16 lulus**.
+Di UI, tab **Uji Kebocoran** menjalankan 22 skenario live terhadap engine yang
+sama dengan chat. Terakhir: **22/22 lulus**.
+
+### Pemetaan kemampuan wajib → fitur → skenario uji
+
+| # | Kemampuan | Fitur | Skenario uji |
+|---|---|---|---|
+| ① | Pertanyaan bahasa alami, termasuk lintas bahasa | `SYNONYMS` ID↔EN di `retrieval.js`; sinonim ikut dihitung pada gerbang coverage | `retrieval.test.js`: "What is the fuel allowance?", "How many annual leave days do I get?", "Berapa retention data…"; `security.js`: `bilingual_en_query`, `bilingual_mixed_query`, `bilingual_respects_acl` |
+| ② | Izin selalu berlaku, tanpa restart | `createCorpusLoader` mem-fingerprint isi `seed.json` + `data/docs/*.json` setiap request dan memutasi objek korpus di tempat | `corpus-reload.test.js`: cabut ACL → request berikutnya `no_evidence`; objek korpus lama ikut terbarui; seed rusak tidak menjatuhkan server |
+| ③ | Jawaban hanya dari sumber yang boleh diakses | `policy.js` deny-by-default dievaluasi sebelum indeks BM25 dibangun | `policy.test.js`, `leakage.test.js`, `security.js`: `citation_subset`, `salary_denied_budi`, `layoff_denied_budi`, `contract_denied_budi` |
+| ④ | Konflik antar sumber dilaporkan dan diputuskan | `conflicts.js` (`detectConflicts`, `authorityOf`) + blok "Terdapat perbedaan informasi / Yang berlaku" di `answer.js` | `conflicts.test.js`; `security.js`: `conflict_surfaced`, `conflict_authority_wins`, `conflict_respects_acl` |
+| ⑤ | Instruksi berbahaya dan permintaan ekstraksi ditolak | Guardrail intent di `answer.js`, `stripInjection` di `retrieval.js`, identitas hanya dari host/token | `leakage.test.js`, `skill-bundle.test.js`, `security.js`: `injection_ignored`, `credentials_blocked`, `bulk_blocked`, `identity_claim_ignored` |
+| ⑥ | Setiap jawaban dapat diaudit dan diverifikasi | `audit.js` menyimpan jawaban, metadata sitasi, konflik, dan hash chain SHA-256; endpoint `GET /api/audit/verify` | `audit.test.js`: isi entri, konflik tercatat, tamper terdeteksi, `no_evidence` tetap terantai; `server.test.js`: 403 untuk non-auditor |
 
 Untuk submission, `npm run verify:mcp` memastikan connector MCP (tool `ask`)
 berjalan end-to-end ke Nalar API mode token, dan
@@ -326,17 +340,18 @@ Catatan:
 ```text
 workby/
 ├── brain/
-│   ├── data/seed.json          # 29 dokumen inti + 8 identitas (9 total dengan bayu)
+│   ├── data/seed.json          # 32 dokumen inti + 9 identitas
 │   ├── src/
 │   │   ├── policy.js           # ACL deny-by-default + field filter
 │   │   ├── retrieval.js        # BM25, chunking, sanitasi injection
 │   │   ├── answer.js           # guardrail, compose, sitasi, audit
-│   │   ├── security.js         # 16 skenario uji live
+│   │   ├── conflicts.js        # deteksi konflik + otoritas sumber
+│   │   ├── security.js         # 22 skenario uji live
 │   │   ├── tokens.js           # pemetaan access token -> identitas
 │   │   ├── server.js           # API + static demo (mode open / token)
-│   │   ├── audit.js            # append-only metadata log
+│   │   ├── audit.js            # audit hash-chained + verifikasi integritas
 │   │   └── cli.js              # demo terminal
-│   └── test/                   # 46 test
+│   └── test/                   # 63 test
 ├── connector/                  # WorkBuddy MCP Connector (tool: ask)
 ├── scripts/                    # ingest PDF, verifikasi MCP, watcher, export workflow
 ├── samples/                    # contoh PDF sumber untuk di-ingest

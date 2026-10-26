@@ -257,7 +257,11 @@ function renderAnswerText(container, text) {
   for (const rawLine of String(text ?? "").split("\n")) {
     const line = rawLine.trim();
     if (!line) continue;
-    if (line.startsWith("- ")) {
+    if (line.startsWith("Yang berlaku:")) {
+      container.append(el("div", "answer-verdict", line));
+    } else if (line.startsWith("Terdapat perbedaan informasi")) {
+      container.append(el("div", "answer-conflict", line));
+    } else if (line.startsWith("- ")) {
       container.append(el("div", "answer-line", line.slice(2)));
     } else {
       container.append(el("div", "answer-para", line));

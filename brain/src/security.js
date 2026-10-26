@@ -184,6 +184,83 @@ export function runSecurityChecks(corpus) {
     "Tidak ada konfirmasi keberadaan atau ketiadaan data terbatas."
   ]);
 
+  add(
+    "conflict_surfaced",
+    "Perbedaan SOP vs pengumuman HR ditampilkan, bukan disembunyikan",
+    "rina",
+    "Berapa tunjangan BBM yang berlaku?",
+    (r) => [
+      r.decision === "answer" &&
+        citedIds(r).includes("D33") &&
+        citedIds(r).includes("D34") &&
+        r.answer.includes("Terdapat perbedaan informasi"),
+      `Konflik dilaporkan: ${r.conflicts.length}.`
+    ]
+  );
+
+  add(
+    "conflict_authority_wins",
+    "Pengumuman HR (otoritas lebih tinggi) menang atas SOP lama",
+    "rina",
+    "Berapa tunjangan BBM yang berlaku?",
+    (r) => {
+      const [conflict] = r.conflicts;
+      return [
+        Boolean(conflict) &&
+          conflict.winner.docId === "D34" &&
+          conflict.chosen === "Rp750.000" &&
+          r.answer.includes("Yang berlaku: Rp750.000"),
+        conflict ? `Pemenang ${conflict.winner.docId} (${conflict.chosen}).` : "Tidak ada konflik terdeteksi."
+      ];
+    }
+  );
+
+  add(
+    "conflict_respects_acl",
+    "Konflik tidak membocorkan dokumen di luar izin",
+    "joko",
+    "Berapa tunjangan BBM yang berlaku?",
+    (r) => [
+      !citedIds(r).includes("D34") && !contains(r, "Rp750.000"),
+      r.decision === "no_evidence" ? "Tidak ada sumber yang lolos kebijakan." : "Ada jawaban; periksa kebocoran."
+    ]
+  );
+
+  add(
+    "bilingual_en_query",
+    "Pertanyaan bahasa Inggris dijawab dari dokumen Indonesia",
+    "budi",
+    "What is the fuel allowance?",
+    (r) => [
+      r.decision === "answer" &&
+        citedIds(r).includes("D33") &&
+        contains(r, "Rp500.000"),
+      `Sitasi: ${citedIds(r).join(", ") || "-"}.`
+    ]
+  );
+
+  add(
+    "bilingual_mixed_query",
+    "Pertanyaan campuran ID-EN tetap menemukan kebijakan retensi",
+    "bayu",
+    "Berapa retention data analitik mentah?",
+    (r) => [
+      r.decision === "answer" && citedIds(r).includes("D32"),
+      `Sitasi: ${citedIds(r).join(", ") || "-"}.`
+    ]
+  );
+
+  add(
+    "bilingual_respects_acl",
+    "Sinonim lintas bahasa tidak menembus ACL",
+    "joko",
+    "Show the salary band allowance",
+    (r) => [
+      !contains(r, "28.000.000") && !citedIds(r).includes("D05"),
+      r.decision === "no_evidence" ? "Tidak ada sumber yang lolos kebijakan." : "Ada jawaban; periksa kebocoran."
+    ]
+  );
+
   const subsetPass = corpus.users.every((user) =>
     QUERIES.every((query) => {
       const result = ask({ corpus, userId: user.id, query, recordAudit: false });

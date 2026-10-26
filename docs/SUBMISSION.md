@@ -38,9 +38,9 @@ Karyawan mengetik di WorkBuddy
 
 | Bukti | Angka |
 |---|---|
-| Uji otomatis | **46/46 lulus** (`npm test`) |
-| Skenario uji kebocoran live | **16/16 lulus** (tab *Uji Kebocoran* di UI demo) |
-| Matriks user × dokumen | **9 user × 31 dokumen** — 0 sitasi terlarang |
+| Uji otomatis | **63/63 lulus** (`npm test`) |
+| Skenario uji kebocoran live | **22/22 lulus** (tab *Uji Kebocoran* di UI demo) |
+| Matriks user × dokumen | **9 user × 33 dokumen** — 0 sitasi terlarang |
 | Run nyata di WorkBuddy desktop | **4 task** terekspor (`docs/evidence/workflow-export.md`) |
 | Connector MCP | `npm run verify:mcp` → `initialize` → `tools/list` → `tools/call` OK |
 | Perbedaan jawaban sesuai identitas | satu task: *boleh* (D01) + *ditolak* (`no_evidence`, 0 sitasi) |
@@ -88,8 +88,24 @@ sensitif) → jawaban agent, plus klasifikasi kebocoran yang **sadar identitas**
 | 0:50–1:20 | Tanya *"Berapa salary band Senior Backend Engineer?"* sebagai **budi** | ditolak, 0 sitasi, tanpa angka |
 | 1:20–1:40 | Tampilkan tool call `Skill` → `Bash` | orkestrasi agen terbukti |
 | 1:40–2:20 | Ganti identitas ke **rina** (host) lalu tanya yang sama | boleh akses + nominal + sitasi D05/D19 |
-| 2:20–2:45 | Tab **Uji Kebocoran** (16/16) + tab **Audit** | keamanan terukur, audit metadata-only |
+| 2:20–2:45 | Tab **Uji Kebocoran** (22/22) + tab **Audit** | keamanan terukur, audit metadata-only |
 | 2:45–3:00 | Tutup: *"Keamanan ada di retrieval, bukan di prompt."* | klaim utama |
+
+## 6b. Pemetaan kemampuan wajib → fitur → skenario uji
+
+| # | Kemampuan | Fitur yang dibangun | Skenario uji yang membuktikan |
+|---|---|---|---|
+| ① | Pertanyaan bahasa alami, termasuk lintas bahasa | Sinonim ID↔EN di `brain/src/retrieval.js`; sinonim dihitung pada gerbang *coverage*, bukan hanya skor | `retrieval.test.js` — "What is the fuel allowance?" (D33+D34), "How many annual leave days do I get?" (12 hari), "Berapa retention data analitik mentah?" (D32) |
+| ② | Perubahan izin berlaku tanpa restart | `createCorpusLoader` mem-fingerprint isi `seed.json` + `brain/data/docs/*.json` setiap request, lalu memutasi objek korpus di tempat | `corpus-reload.test.js` — cabut ACL → request berikutnya `no_evidence`; referensi korpus lama ikut terbarui; seed rusak tidak menjatuhkan server |
+| ③ | Jawaban hanya dari sumber yang boleh diakses | ACL deny-by-default di `policy.js`, dievaluasi **sebelum** indeks BM25 dibangun | `policy.test.js`, `leakage.test.js`, `security.js` — `citation_subset`, `salary_denied_budi`, `layoff_denied_budi`, `contract_denied_budi` |
+| ④ | Konflik antar sumber dilaporkan dan diputuskan | `brain/src/conflicts.js` (otoritas sumber → kebaruan) + blok "Terdapat perbedaan informasi / Yang berlaku" | `conflicts.test.js`; `security.js` — `conflict_surfaced`, `conflict_authority_wins` (announcement D34 mengalahkan SOP D33), `conflict_respects_acl` |
+| ⑤ | Instruksi berbahaya ditolak | Guardrail intent, `stripInjection`, identitas hanya dari host/token | `leakage.test.js`, `skill-bundle.test.js`, `security.js` — `injection_ignored`, `credentials_blocked`, `bulk_blocked`, `identity_claim_ignored` |
+| ⑥ | Setiap jawaban dapat diaudit dan diverifikasi | `audit.js` menyimpan teks jawaban, metadata sitasi, konflik, dan hash chain SHA-256; `GET /api/audit/verify` | `audit.test.js` — isi entri, konflik tercatat, manipulasi terdeteksi (`hash_mismatch`), entri `no_evidence` tetap terantai; `server.test.js` — 403 untuk non-auditor |
+
+Demo konflik (④) satu langkah: sebagai **Rina**, tanyakan
+*"Berapa tunjangan BBM yang berlaku?"* → dua sitasi (SOP Rp500.000 vs
+pengumuman HR Rp750.000) plus keputusan eksplisit
+`Yang berlaku: Rp750.000 — sumber announcement memiliki otoritas lebih tinggi`.
 
 ## 7. Pemetaan ke kriteria (asumsi kriteria umum)
 

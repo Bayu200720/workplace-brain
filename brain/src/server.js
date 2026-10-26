@@ -129,12 +129,24 @@ async function serveStatic(response, pathname) {
   }
 }
 
-export function createAppServer({ corpus = loadCorpus(), audit = auditLog } = {}) {
+export function createAppServer({
+  corpus = loadCorpus(),
+  audit = auditLog,
+  refreshCorpus = loadCorpus
+} = {}) {
   const allowRequest = createRateLimiter();
   const registry = loadTokenRegistry();
 
   return createHttpServer(async (request, response) => {
     const url = new URL(request.url ?? "/", "http://localhost");
+
+    // Re-stat the corpus files so ACL or document edits apply on the next
+    // request. A broken seed file keeps the last known-good corpus serving.
+    try {
+      refreshCorpus();
+    } catch (error) {
+      process.emitWarning(`Corpus reload dilewati: ${error.message}`);
+    }
 
     try {
       if (request.method === "GET" && url.pathname === "/api/health") {
@@ -233,8 +245,37 @@ export function createAppServer({ corpus = loadCorpus(), audit = auditLog } = {}
         const limit = Number.parseInt(url.searchParams.get("limit") ?? "50", 10);
         sendJson(response, 200, {
           ok: true,
+          integrity: audit.verify(),
           entries: audit.recent(Number.isFinite(limit) ? limit : 50)
         });
+        return;
+      }
+
+      if (request.method === "GET" && url.pathname === "/api/audit/verify") {
+        const requestedUserId = url.searchParams.get("userId") ?? "";
+        let userId = requestedUserId;
+        if (registry.enabled) {
+          const tokenUser = identityForToken(registry, bearerToken(request.headers));
+          if (!tokenUser) {
+            sendJson(response, 401, {
+              ok: false,
+              error: "unauthorized",
+              message: "Access token Nalar tidak ada atau tidak valid."
+            });
+            return;
+          }
+          userId = tokenUser;
+        }
+        const user = corpus.userById.get(userId);
+        if (!canAudit(user)) {
+          sendJson(response, 403, {
+            ok: false,
+            error: "forbidden",
+            message: "Verifikasi audit hanya tersedia untuk grup audit."
+          });
+          return;
+        }
+        sendJson(response, 200, { ok: true, integrity: audit.verify() });
         return;
       }
 
@@ -292,6 +333,7 @@ export function createAppServer({ corpus = loadCorpus(), audit = auditLog } = {}
           "/api/users",
           "/api/ask",
           "/api/audit",
+          "/api/audit/verify",
           "/api/selftest",
           "/api/auth/mode",
           "/api/demo/tokens"

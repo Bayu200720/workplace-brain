@@ -89,7 +89,7 @@ test("selftest hanya untuk auditor dan semua skenario lulus", async () => {
   const allowed = await post("/api/selftest", { userId: "dewi" });
   assert.equal(allowed.status, 200);
   assert.equal(allowed.data.summary.failed, 0);
-  assert.equal(allowed.data.summary.total, 16);
+  assert.equal(allowed.data.summary.total, 22);
 });
 
 test("static UI tersedia dan traversal ditolak", async () => {
@@ -105,4 +105,16 @@ test("static UI tersedia dan traversal ditolak", async () => {
 test("method yang tidak didukung ditolak", async () => {
   const response = await fetch(`${base}/api/health`, { method: "POST" });
   assert.equal(response.status, 405);
+});
+
+test("verifikasi integritas audit hanya untuk grup audit", async () => {
+  const denied = await fetch(`${base}/api/audit/verify?userId=rina`);
+  assert.equal(denied.status, 403);
+
+  await post("/api/ask", { userId: "dewi", query: "Berapa cuti tahunan?" });
+
+  const allowed = await fetch(`${base}/api/audit/verify?userId=dewi`).then((r) => r.json());
+  assert.equal(allowed.ok, true);
+  assert.equal(allowed.integrity.ok, true);
+  assert.ok(allowed.integrity.entries >= 1);
 });

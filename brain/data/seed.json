@@ -1148,6 +1148,60 @@
       },
       "fields": [],
       "body": "Kebijakan Retensi Data Analytics 2026\n\nData analitik mentah disimpan maksimal 90 hari sejak pemakaian terakhir. Setelah itu, data wajib dianonimkan atau dihapus oleh pipeline retensi harian.\n\nAgregat yang sudah dianonimkan boleh disimpan 3 tahun dan dipakai untuk pelaporan internal.\n\nLaporan yang memuat data pelanggan diberi label internal dan hanya boleh diakses tim data. Ekspor ke luar perusahaan memerlukan persetujuan Data Office.\n\nLog retensi mencatat setiap penghapusan dan dapat diaudit bulanan oleh tim governance."
+    },
+    {
+      "id": "D33",
+      "title": "SOP Perjalanan Dinas — Tunjangan BBM",
+      "source": "drive",
+      "source_ref": "Drive/Finance/SOP-Perjalanan-Dinas-2024.pdf",
+      "owner": "Finance",
+      "classification": "internal",
+      "updated_at": "2024-11-02",
+      "tags": [
+        "tunjangan",
+        "bbm",
+        "perjalanan",
+        "sop",
+        "transport"
+      ],
+      "acl": {
+        "visibility": "org",
+        "departments": [],
+        "groups": [],
+        "users": [],
+        "projects": [],
+        "deny_users": [],
+        "deny_groups": []
+      },
+      "fields": [],
+      "body": "SOP Perjalanan Dinas - Tunjangan BBM\n\nTunjangan BBM untuk perjalanan dinas dalam kota sebesar Rp500.000 per bulan dan berlaku untuk seluruh pegawai tetap sesuai kebijakan tahun berjalan.\n\nTunjangan transportasi pegawai kantor sebesar Rp500.000 per bulan dan dihitung bersamaan dengan payroll bulanan.\n\nDokumen ini merupakan SOP lama; pembaruan tunjangan diumumkan terpisah oleh People Ops melalui pengumuman resmi."
+    },
+    {
+      "id": "D34",
+      "title": "Pengumuman HR: Penyesuaian Tunjangan BBM",
+      "source": "announcement",
+      "source_ref": "Pengumuman/HR/Penyesuaian-Tunjangan-BBM-2026",
+      "owner": "People Ops",
+      "classification": "internal",
+      "updated_at": "2026-10-15",
+      "tags": [
+        "tunjangan",
+        "bbm",
+        "pengumuman",
+        "hr",
+        "transport"
+      ],
+      "acl": {
+        "visibility": "org",
+        "departments": [],
+        "groups": [],
+        "users": [],
+        "projects": [],
+        "deny_users": [],
+        "deny_groups": []
+      },
+      "fields": [],
+      "body": "Pengumuman HR - Penyesuaian Tunjangan BBM\n\nMulai tanggal 15 Oktober 2026, tunjangan BBM dinaikkan menjadi Rp750.000 per bulan untuk seluruh pegawai tetap, menggantikan ketentuan SOP yang masih mencantumkan Rp500.000.\n\nPenyesuaian ini berlaku surut sejak awal Oktober 2026 dan akan masuk pada slip gaji bulan berjalan.\n\nTunjangan transportasi pegawai kantor tetap Rp750.000 per bulan sesuai pengumuman terbaru."
     }
   ]
 }

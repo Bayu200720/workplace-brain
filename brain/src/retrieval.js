@@ -72,7 +72,53 @@ const SYNONYMS = {
   onboarding: ["orientasi", "masuk"],
   offboarding: ["exit", "keluar", "serah-terima"],
   profil: ["profile", "perusahaan", "company"],
-  perusahaan: ["company", "profil"]
+  perusahaan: ["company", "profil"],
+  tunjangan: ["allowance", "benefit", "subsidi"],
+  allowance: ["tunjangan", "benefit", "subsidi"],
+  benefit: ["tunjangan", "allowance"],
+  bbm: ["fuel", "bensin", "transport", "transportasi"],
+  fuel: ["bbm", "bensin", "transport"],
+  bensin: ["bbm", "fuel"],
+  transport: ["transportasi", "bbm", "perjalanan"],
+  transportasi: ["transport", "bbm", "perjalanan"],
+  perjalanan: ["travel", "trip", "dinas", "reimbursement"],
+  travel: ["perjalanan", "dinas", "trip"],
+  trip: ["perjalanan", "dinas"],
+  dinas: ["travel", "perjalanan", "trip"],
+  kebijakan: ["policy", "aturan"],
+  policy: ["kebijakan", "aturan"],
+  aturan: ["policy", "kebijakan"],
+  prosedur: ["procedure", "sop"],
+  sop: ["procedure", "prosedur"],
+  procedure: ["prosedur", "sop"],
+  keamanan: ["security"],
+  security: ["keamanan"],
+  laporan: ["report", "reporting"],
+  report: ["laporan"],
+  rapat: ["meeting", "notulen"],
+  meeting: ["rapat", "notulen"],
+  notulen: ["minutes", "meeting", "rapat"],
+  biaya: ["cost", "expense"],
+  cost: ["biaya", "expense"],
+  expense: ["biaya", "cost", "reimbursement"],
+  harga: ["price", "nilai"],
+  price: ["harga", "nilai"],
+  pengumuman: ["announcement", "memo", "edaran"],
+  announcement: ["pengumuman", "memo"],
+  penyimpanan: ["retention", "retensi", "storage"],
+  retensi: ["retention", "penyimpanan"],
+  retention: ["retensi", "penyimpanan"],
+  keluar: ["exit", "offboarding", "resign"],
+  exit: ["keluar", "offboarding"],
+  annual: ["tahunan", "tahun", "yearly"],
+  yearly: ["tahunan", "tahun"],
+  day: ["hari"],
+  days: ["hari"],
+  week: ["minggu"],
+  month: ["bulan"],
+  year: ["tahun"],
+  hours: ["jam"],
+  hour: ["jam"]
 };
 
 const INJECTION_PATTERN =
@@ -247,10 +293,11 @@ function bm25(index, chunk, weights, k1 = 1.5, b = 0.75) {
 
 function coverage(entry, originalTerms) {
   const searchable = new Set(entry.allTokens);
-  return originalTerms.reduce(
-    (count, term) => count + (searchable.has(term) ? 1 : 0),
-    0
-  );
+  return originalTerms.reduce((count, term) => {
+    if (searchable.has(term)) return count + 1;
+    const synonyms = SYNONYMS[term] ?? [];
+    return count + (synonyms.some((synonym) => searchable.has(synonym)) ? 1 : 0);
+  }, 0);
 }
 
 function escapeRegExp(value) {

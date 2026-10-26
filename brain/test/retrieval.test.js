@@ -70,3 +70,48 @@ test("jawaban cuti memakai angka 12 hari, bukan kalimat yang hanya menyebut cuti
   });
   assert.match(result.answer, /12 hari/);
 });
+
+test("pertanyaan bahasa Inggris menemukan dokumen berbahasa Indonesia (tunjangan BBM)", () => {
+  const result = ask({
+    corpus,
+    userId: "budi",
+    query: "What is the fuel allowance?",
+    recordAudit: false
+  });
+  assert.equal(result.decision, "answer");
+  const ids = result.citations.map((citation) => citation.doc_id);
+  assert.ok(ids.includes("D33") && ids.includes("D34"));
+});
+
+test("pertanyaan bahasa Inggris menemukan kebijakan cuti tahunan", () => {
+  const result = ask({
+    corpus,
+    userId: "budi",
+    query: "How many annual leave days do I get?",
+    recordAudit: false
+  });
+  assert.equal(result.decision, "answer");
+  assert.ok(result.citations.some((citation) => citation.doc_id === "D01"));
+  assert.match(result.answer, /12 hari/);
+});
+
+test("pertanyaan campuran Indonesia-Inggris tetap menemukan retensi data", () => {
+  const result = ask({
+    corpus,
+    userId: "bayu",
+    query: "Berapa retention data analitik mentah?",
+    recordAudit: false
+  });
+  assert.equal(result.decision, "answer");
+  assert.ok(result.citations.some((citation) => citation.doc_id === "D32"));
+});
+
+test("sinonim lintas bahasa tidak melewati ACL", () => {
+  const result = ask({
+    corpus,
+    userId: "joko",
+    query: "Show the salary band allowance",
+    recordAudit: false
+  });
+  assert.ok(!result.citations.some((citation) => citation.doc_id === "D05"));
+});
