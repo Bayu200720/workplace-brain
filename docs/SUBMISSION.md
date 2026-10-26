@@ -44,6 +44,8 @@ Karyawan mengetik di WorkBuddy
 | Run nyata di WorkBuddy desktop | **4 task** terekspor (`docs/evidence/workflow-export.md`) |
 | Connector MCP | `npm run verify:mcp` → `initialize` → `tools/list` → `tools/call` OK |
 | Perbedaan jawaban sesuai identitas | satu task: *boleh* (D01) + *ditolak* (`no_evidence`, 0 sitasi) |
+| Konflik sumber diputuskan | SOP D33 (Rp500.000, 2024) vs pengumuman HR D34 (Rp750.000, 2026) → `Yang berlaku: Rp750.000` |
+| Integritas audit | `GET /api/audit/verify` → `{"integrity":{"ok":true,...}}`; manipulasi entri → `hash_mismatch` |
 
 ## 4. Yang harus dilampirkan
 

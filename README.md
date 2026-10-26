@@ -47,8 +47,13 @@ Demo dimulai sebagai **Budi** (engineer). Coba:
    diredaksi;
 4. sebagai **Budi**, tanyakan *"Ada rencana PHK?"* → tidak ada konfirmasi
    keberadaan data;
-5. sebagai **Dewi** (CEO), buka tab **Uji Kebocoran** → 22/22 skenario lulus;
-6. buka tab **Audit** → hanya metadata akses yang tercatat.
+5. sebagai **Rina**, tanyakan *"Berapa tunjangan BBM yang berlaku?"* → dua
+   sumber bertentangan (SOP Rp500.000 vs pengumuman HR Rp750.000) plus vonis
+   *"Yang berlaku: Rp750.000"* berbasis otoritas sumber;
+6. sebagai **Dewi** (CEO), buka tab **Uji Kebocoran** → 22/22 skenario lulus;
+7. buka tab **Audit** → setiap jawaban tercatat lengkap dengan sitasi dan hash
+   chain; `curl "http://127.0.0.1:4173/api/audit/verify?userId=dewi"` membuktikan
+   log tidak pernah diubah.
 
 ## Arsitektur
 
